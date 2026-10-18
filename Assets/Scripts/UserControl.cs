@@ -56,14 +56,9 @@ public class UserControl : MonoBehaviour
         Marker.SetActive(false);
     }
 
-    private void Update()
+    public void HandleSelection ()
     {
-        Vector2 move = moveAction.ReadValue<Vector2>();
-        GameCamera.transform.position = GameCamera.transform.position + new Vector3(move.y, 0, -move.x) * PanSpeed * Time.deltaTime;
-
-        if (leftClickAction.WasPressedThisFrame())
-        {
-            var ray = GameCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        var ray = GameCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
@@ -77,11 +72,11 @@ public class UserControl : MonoBehaviour
                 var uiInfo = hit.collider.GetComponentInParent<MainUIHandler.IUIInfoContent>();
                 MainUIHandler.Instance.SetNewInfoContent(uiInfo);
             }
-        }
-        else if (selected != null && rightClickAction.WasPressedThisFrame())
-        {   
-            //right click give order to the unit
-            var ray = GameCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+    }
+
+    public void HandleAction ()
+    {
+        var ray = GameCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
@@ -96,6 +91,21 @@ public class UserControl : MonoBehaviour
                     selected.GoTo(hit.point);
                 }
             }
+    }
+
+    private void Update()
+    {
+        Vector2 move = moveAction.ReadValue<Vector2>();
+        GameCamera.transform.position = GameCamera.transform.position + new Vector3(move.y, 0, -move.x) * PanSpeed * Time.deltaTime;
+
+        if (leftClickAction.WasPressedThisFrame())
+        {
+            HandleSelection();
+        }
+        else if (selected != null && rightClickAction.WasPressedThisFrame())
+        {   
+            HandleAction();
+            
         }
 
         MarkerHandling();

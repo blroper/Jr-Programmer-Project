@@ -27,6 +27,7 @@ public class MenuUIHandler : MonoBehaviour
     
     public void Exit()
     {
+
         //save the team color before exiting
         MainManager.Instance.SaveColor();
         
